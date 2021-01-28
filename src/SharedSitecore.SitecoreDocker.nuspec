@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>SharedSitecore.SitecoreDocker</id>
+    <version>$VERSION$</version>
+    <authors>David Walker, Radical Dave, Sitecore Dave</authors>
+    <description>PowerShell extensions for Docker-based Sitecore development</description>
+    <copyright>Copyright (C) by Radical Dave</copyright>
+    <releaseNotes>Version 0.0.1 initial release</releaseNotes>
+    <tags>sitecore docker powershell</tags>
+  </metadata>
+</package>
