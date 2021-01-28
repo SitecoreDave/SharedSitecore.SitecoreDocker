@@ -52,8 +52,10 @@ function Set-LocationPSScript
 	}
 	process {	
 		if ($cwd -ne $scriptPath) {
-			Write-Verbose "Set-Location:$scriptPath"
-			Set-Location $scriptPath
+			if($PSCmdlet.ShouldProcess($scriptPath)) {
+				Write-Verbose "Set-Location:$scriptPath"
+				Set-Location $scriptPath
+			}
 		}
 		return $cwd
 	}
