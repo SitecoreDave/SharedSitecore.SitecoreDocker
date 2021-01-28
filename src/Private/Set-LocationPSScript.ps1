@@ -40,9 +40,10 @@ function Set-LocationPSScript
 
 		$scriptName = ($MyInvocation.MyCommand.Name.Replace(".ps1",""))
 		$scriptPath = $PSScriptRoot #$MyInvocation.MyCommand.Path
-		Write-Verbose "$scriptName $path $cwd started"
+		$callingScript = $MyInvocation.PSCommandPath | Split-Path -Parent
+		Write-Verbose "$scriptName $path $cwd called by:$callingScript"
 		if(!$path) { $path = $scriptPath | Split-Path }
-		if(!$cwd) { $cwd = $scriptPath | Split-Path }
+		if(!$cwd) { $cwd = $callingScript }
 	}
 	process {	
 		Write-Verbose "$scriptName $path $cwd processing"		

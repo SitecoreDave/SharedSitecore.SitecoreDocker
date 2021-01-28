@@ -26,6 +26,7 @@
             }
             It 'not null' {
                 #$scriptFolder = $PSScriptRoot | Split-Path -Parent
+                Set-Location $PSScriptRoot
                 $expected = $pwd
                 Set-LocationPSScript $expected | Should -Be $expected
                 Get-Location | Should -Be $expected #| Should Exist
