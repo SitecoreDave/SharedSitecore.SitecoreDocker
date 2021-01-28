@@ -53,11 +53,12 @@ function Build-SitecoreDocker
 
 		Write-Verbose "$scriptName $version $os started"
 
-		$cwd = Get-Location
-		if ($cwd -ne $scriptPath) {
-			Write-Verbose "Set-Location:$scriptPath"
-			Set-Location $scriptPath
-		}
+		$cwd = Set-LocationPSScript $PSScriptRoot
+		#$cwd = Get-Location
+		#if ($cwd -ne $scriptPath) {
+		#	Write-Verbose "Set-Location:$scriptPath"
+		#	Set-Location $scriptPath
+		#}
 		#$repoPath = [System.IO.Path]::GetFullPath("$cwd/../../..")
 		#$repoPath = System.IO.Path]::GetFullPath(($cwd + "\.." * 3))
 		#$moduleName = (Get-Item $cwd).Parent.Parent.Parent.FullName

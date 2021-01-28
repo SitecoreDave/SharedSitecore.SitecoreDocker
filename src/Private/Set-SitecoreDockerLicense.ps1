@@ -14,7 +14,7 @@ Set-StrictMode -Version Latest
 .EXAMPLE
     PS C:\> Set-SitecoreDockerLicense -Variable VAR1 -Value "value one"
 .EXAMPLE
-    PS C:\> "value one" | Set-SitecoreDockerLivense "VAR1"
+    PS C:\> "value one" | Set-SitecoreDockerLicense "VAR1"
 .EXAMPLE
     PS C:\> Set-SitecoreDockerLicense -Variable VAR1 -Value "value one" -Path .\src\.env
 .INPUTS
@@ -50,11 +50,12 @@ function Set-SitecoreDockerLicense
 
 		Write-Verbose "$scriptName $license started"
 
-		$cwd = Get-Location
-		if ($cwd -ne $scriptPath) {
-			Write-Verbose "Set-Location:$scriptPath"
-			Set-Location $scriptPath
-		}
+		$cwd = Set-LocationPSScript $PSScriptRoot
+		#$cwd = Get-Location
+		#if ($cwd -ne $scriptPath) {
+		#	Write-Verbose "Set-Location:$scriptPath"
+		#	Set-Location $scriptPath
+		#}
 		#$repoPath = [System.IO.Path]::GetFullPath("$cwd/../../..")
 		#$repoPath = System.IO.Path]::GetFullPath(($cwd + "\.." * 3))
 		$reposPath = Split-Path (Split-Path (Split-Path $scriptPath -Parent) -Parent) -Parent
@@ -67,9 +68,10 @@ function Set-SitecoreDockerLicense
 		try {
 			if (!(Test-Path $license)) {
 				$license = "c:\license\license.xml"
-				if (!(Test-Path $license)) {
-					$license = Join-Path (Join-Path (Join-Path $reposPath "SharedSitecore.Sinstall") "assets") "license.xml"
-				}
+				#Check another location, another repo? older SharedSitecore.Sinstall?
+				#if (!(Test-Path $license)) {
+				#	$license = Join-Path (Join-Path (Join-Path $reposPath "SharedSitecore.Sinstall") "assets") "license.xml"
+				#}
 			}
 			
 			#MUST HAVE VALID LICENSEPATH TO CONTINUE WITHOUT ERROR
@@ -81,6 +83,7 @@ function Set-SitecoreDockerLicense
 			#MUST HAVE VALID LICENSEPATH TO CONTINUE WITHOUT ERROR
 			if (!(Test-Path "$reposPath\$dockerimages")) {
 				Write-Error "github.com/sitecore/docker-images is a prerequisite for $scriptName."
+				#TODO: CALL git clone github.com/sitecore/docker-images
 				EXIT 1
 			}
 			
