@@ -5,5 +5,6 @@ param(
 if (Get-Module SharedSitecore.SitecoreDocker -ErrorAction SilentlyContinue) {
     Remove-Module SharedSitecore.SitecoreDocker -Force
 }
-Import-Module $PSScriptRoot\..\src\SharedSitecore.SitecoreDocker.psd1 -Force -Scope Global -ErrorAction Stop
+Clear-Host
+Import-Module $PSScriptRoot\..\src\SharedSitecore.SitecoreDocker.psm1 -Force -Scope Global -ErrorAction Stop
 InModuleScope SharedSitecore.SitecoreDocker $TestScope

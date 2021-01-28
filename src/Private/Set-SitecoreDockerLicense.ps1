@@ -47,16 +47,11 @@ function Set-SitecoreDockerLicense
 		$VerbosePreference = "Continue"
 
 		$scriptName = ($MyInvocation.MyCommand.Name.Replace(".ps1",""))
-		$scriptPath = $PSScriptRoot
+		$scriptPath = $PSScriptRoot #$MyInvocation.MyCommand.Path
+		$scriptFolder = Split-Path $scriptPath
 
 		Write-Verbose "$scriptName $license started"
-
-		$cwd = Set-LocationPSScript $PSScriptRoot
-		#$cwd = Get-Location
-		#if ($cwd -ne $scriptPath) {
-		#	Write-Verbose "Set-Location:$scriptPath"
-		#	Set-Location $scriptPath
-		#}
+		$cwd = Set-LocationPSScript $scriptFolder
 		#$repoPath = [System.IO.Path]::GetFullPath("$cwd/../../..")
 		#$repoPath = System.IO.Path]::GetFullPath(($cwd + "\.." * 3))
 		$reposPath = Split-Path (Split-Path (Split-Path $scriptPath -Parent) -Parent) -Parent

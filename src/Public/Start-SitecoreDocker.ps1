@@ -45,19 +45,11 @@ function Start-SitecoreDocker
 		$VerbosePreference = "Continue"
 
 		$scriptName = ($MyInvocation.MyCommand.Name.Replace(".ps1",""))
-		$scriptPath = $PSScriptRoot
+		$scriptPath = $PSScriptRoot #$MyInvocation.MyCommand.Path
+		$scriptFolder = Split-Path $scriptPath
 		
 		Write-Verbose "$scriptName $config started"
-		$location = Get-Location
-		Write-Verbose "location:$location"
-		#$cwd = Set-LocationPSScript $PSScriptRoot $location
-		$cwd = Set-LocationPSScript $PSScriptRoot
-		Write-Verbose "cwd:$cwd"
-		#$cwd = Get-Location
-		#if ($cwd -ne $scriptPath) {
-	#		Write-Verbose "Set-Location:$scriptPath"
-#			Set-Location $scriptPath
-		#}
+		$cwd = Set-LocationPSScript $scriptFolder
 		#$repoPath = [System.IO.Path]::GetFullPath("$cwd/../../..")
 		#$repoPath = System.IO.Path]::GetFullPath(($cwd + "\.." * 3))
 		#$repoPath = (Get-Item $cwd).parent.parent.parent.FullName
@@ -66,7 +58,7 @@ function Start-SitecoreDocker
 	}
 	process {
 		try {
-			#TODO: Check if it needs to be Build-SitecoreDocker first and call it
+			#TODO: Check if it needs to do Build-SitecoreDocker first and call it
 			#Build-SitecoreDocker
     	    Set-Location "$reposPath\$dockerimages\build\windows\tests\9.3.x"
 			if($PSCmdlet.ShouldProcess($config)) {

@@ -29,11 +29,14 @@ Write-Verbose "repoPath:$repoPath"
 
 try {
 
-    Write-Verbose "$scriptName validating..."
-    Import-Module -Name PSScriptAnalyzer
-    Invoke-ScriptAnalyzer -Path . -Recurse -Severity Warning
-
-    Import-Module .\src\SharedSitecore.SitecoreDocker.psm1
+    #Write-Verbose "$scriptName validating..."
+    #if (!(Get-Module PSScriptAnalyzer -ErrorAction SilentlyContinue)) {
+    #    Install-Module -Name PSScriptAnalyzer -Repository PSGallery -Force
+    #}
+    #
+    #Invoke-ScriptAnalyzer -Path . -Recurse -Severity Warning
+    #Import-Module .\src\SharedSitecore.SitecoreDocker.psm1
+    Invoke-Pester
 
     #sign scripts
     $cert = "$moduleName.pfx"

@@ -1,18 +1,15 @@
 Set-StrictMode -Version Latest
 <#
 .SYNOPSIS
-    Sets a variable in a Docker environment (.env) file.
+    Sets current working directory and returns original directory as string so it can be restored when ready
 .DESCRIPTION
-    Sets a variable in a Docker environment (.env) file.
-    Assumes .env file is in the current directory by default.
-.PARAMETER Variable
-    Specifies the variable name.
-.PARAMETER Value
-    Specifies the variable value.
+    Sets current working directory
 .PARAMETER Path
-    Specifies the Docker environment (.env) file path. Assumes .env file is in the current directory by default.
+    Specifies the path that needs to be set as current working directory
+.PARAMETER Cwd
+    Specifies the path that should be reset to return to original working directory.
 .EXAMPLE
-    PS C:\> Set-LocationPSScript -Variable VAR1 -Value "value one"
+    PS C:\> Set-LocationPSScript -Path VAR1 -Cwd "value one"
 .EXAMPLE
     PS C:\> "value one" | Set-LocationPSScript "VAR1"
 .EXAMPLE
@@ -43,12 +40,12 @@ function Set-LocationPSScript
 
 		$scriptName = ($MyInvocation.MyCommand.Name.Replace(".ps1",""))
 		$scriptPath = $PSScriptRoot #$MyInvocation.MyCommand.Path
+		Write-Verbose "$scriptName $path $cwd started"
 		if(!$path) { $path = $scriptPath | Split-Path }
 		if(!$cwd) { $cwd = $scriptPath | Split-Path }
-
-		Write-Verbose "$scriptName $path $cwd started"
 	}
 	process {	
+		Write-Verbose "$scriptName $path $cwd processing"		
 		if ($cwd -ne $scriptPath) {
 			if($PSCmdlet.ShouldProcess($scriptPath)) {
 				Write-Verbose "Set-Location:$scriptPath"

@@ -51,14 +51,7 @@ function Build-SitecoreDocker
 		$scriptFolder = Split-Path $scriptPath
 
 		Write-Verbose "$scriptName $version $os started"
-		Write-Host "currentdirnow:$(Get-Location)"
-		$cwd = Set-LocationPSScript $scriptFolder -verbose
-		Write-Host "currentdirnow:$(Get-Location)"
-		#$cwd = Get-Location
-		#if ($cwd -ne $scriptPath) {
-		#	Write-Verbose "Set-Location:$scriptPath"
-		#	Set-Location $scriptPath
-		#}
+		$cwd = Set-LocationPSScript $scriptFolder
 		#$repoPath = [System.IO.Path]::GetFullPath("$cwd/../../..")
 		#$repoPath = System.IO.Path]::GetFullPath(($cwd + "\.." * 3))
 		#$moduleName = (Get-Item $cwd).Parent.Parent.Parent.FullName
@@ -89,7 +82,6 @@ function Build-SitecoreDocker
 				mkcert $cert
 				Set-Location ..
 			}
-			
 			. .\build.ps1 -SitecoreVersion $version -IncludeSpe:$true -Verbose:$false
 			#. .\build.ps1 -SitecoreVersion $version -OSVersion $osversion -includespe
 			#. .\Build.ps1 -SitecoreVersion @("9.3.0") -IncludeSpe

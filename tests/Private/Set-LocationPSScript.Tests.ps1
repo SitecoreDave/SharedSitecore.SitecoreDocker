@@ -1,28 +1,52 @@
-$ModuleScriptName = 'SharedSitecore.SitecoreDocker.psm1'
-$ModuleManifestName = 'SharedSitecore.SitecoreDocker.psd1'
-$ModuleScriptPath = "$PSScriptRoot\..\..\src\$ModuleScriptName"
-$ModuleManifestPath = "$PSScriptRoot\..\..\src\$ModuleManifestName"
+. $PSScriptRoot\..\TestRunner.ps1 {
+    . $PSScriptRoot\..\TestUtils.ps1
 
-if (!(Get-Module PSScriptAnalyzer -ErrorAction SilentlyContinue)) {
-    Install-Module -Name PSScriptAnalyzer -Repository PSGallery -Force
-}
+        Describe 'Set-LocationPSScript.Tests' {
+            $ModuleScriptName = Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Leaf
+            Write-Output "ModuleScriptName:$ModuleScriptName"
+            #$ModuleScriptName = $PSScriptRoot | Split-Path -Parent -Parent -Leaf
+            $ModuleScriptPath = Join-Path $PSScriptRoot "\..\..\src\$ModuleScriptName.psm1"
+            Write-Output "ModuleScriptPath:$ModuleScriptPath"
 
-Describe 'Set-LocationPSScript Tests' {
-    It 'imports successfully' {
-        { Import-Module -Name $ModuleScriptPath -ErrorAction Stop } | Should -Not -Throw
-    }
+            It 'imports successfully' {
+                #$ModuleScriptName = 'SharedSitecore.SitecoreDocker'
+                #$ModuleScriptPath = "$PSScriptRoot\..\..\src\$ModuleScriptName.psm1"
 
-    It 'passes default PSScriptAnalyzer rules' {
-        Invoke-ScriptAnalyzer -Path $ModuleScriptPath | Should -BeNullOrEmpty
-    }
+                $ModuleScriptName = Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Leaf
+                Write-Output "ModuleScriptName:$ModuleScriptName"
+                #$ModuleScriptName = $PSScriptRoot | Split-Path -Parent -Parent -Leaf
+                $ModuleScriptPath = Join-Path $PSScriptRoot "\..\..\src\$ModuleScriptName.psm1"
+                Write-Output "ModuleScriptPath:$ModuleScriptPath"
+    
+                { Import-Module -Name $ModuleScriptPath -ErrorAction Stop } | Should -Not -Throw
+            }
 
-    $results = Set-LocationPSScript $PSScriptRoot
-}
-
-Describe 'Module Manifest Tests' {
-    It 'passes Test-ModuleManifest' {
-        Write-Output $ModuleManifestPath
-        Test-ModuleManifest -Path $ModuleManifestPath | Should -Not -BeNullOrEmpty
-        $? | Should -Be $true
+            It 'not null' {
+                { Set-LocationPSScript } | Should -Not -Throw #| Should Exist
+            }
+            It 'not null' {
+                #$scriptFolder = $PSScriptRoot | Split-Path -Parent
+                $expected = $pwd
+                Set-LocationPSScript $expected | Should -Be $expected
+                Get-Location | Should -Be $expected #| Should Exist
+            }
+            It 'not null' {
+                $expected = $PSScriptRoot | Split-Path
+                Set-LocationPSScript '..\Public' | Should -Be $expected #| Should Exist
+            }
+            It 'not null' {
+                $expected = $PSScriptRoot | Split-Path -Parent
+                { Set-LocationPSScript $expected } | Should -Not -Throw
+                Get-Location | Should -Be $expected #| Should Exist
+            }
+            It 'not null' {
+                $expected = $PSScriptRoot | Split-Path -Parent
+                Set-Location $expected
+                { Set-LocationPSScript $expected } | Should -Not -Throw
+                Get-Location | Should -Be $expected #| Should Exist
+            }
+            #It "$someFile should exist" {
+            #    $someFile | Should Exist
+            #}
     }
 }
