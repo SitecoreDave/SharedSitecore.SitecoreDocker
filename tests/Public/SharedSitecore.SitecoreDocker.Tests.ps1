@@ -19,7 +19,7 @@ Describe 'Module Tests' {
 
 Describe 'Module Manifest Tests' {
     It 'passes Test-ModuleManifest' {
-        Write-Host $ModuleManifestPath
+        Write-Output $ModuleManifestPath
         Test-ModuleManifest -Path $ModuleManifestPath | Should -Not -BeNullOrEmpty
         $? | Should -Be $true
     }

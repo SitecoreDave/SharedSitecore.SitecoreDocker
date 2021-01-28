@@ -2,7 +2,7 @@ param(
     [Parameter(HelpMessage="The block of tests to run in the scope of the module")]
     [ScriptBlock]$TestScope = $null
 )
-
+Write-Verbose "TestScope:$TestScope"
 Function Test-ParamIsMandatory {
     param(
         [Parameter(Mandatory=$true)]
@@ -51,7 +51,7 @@ Function Compare-Sets {
                 Value = $_.InputObject
             }
 
-            Write-Host "$($Obj.State) => $($obj.Value)"
+            Write-Output "$($Obj.State) => $($obj.Value)"
         }
 
         $results | ForEach-Object $formatter
