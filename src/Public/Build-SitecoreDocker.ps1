@@ -44,16 +44,16 @@ function Build-SitecoreDocker
     )
 	begin {
 		$ErrorActionPreference = 'Stop'
-
-		Clear-Host
 		$VerbosePreference = "Continue"
 
 		$scriptName = ($MyInvocation.MyCommand.Name.Replace(".ps1",""))
-		$scriptPath = $PSScriptRoot
+		$scriptPath = $PSScriptRoot #$MyInvocation.MyCommand.Path
+		$scriptFolder = Split-Path $scriptPath
 
 		Write-Verbose "$scriptName $version $os started"
-
-		$cwd = Set-LocationPSScript $PSScriptRoot
+		Write-Host "currentdirnow:$(Get-Location)"
+		$cwd = Set-LocationPSScript $scriptFolder -verbose
+		Write-Host "currentdirnow:$(Get-Location)"
 		#$cwd = Get-Location
 		#if ($cwd -ne $scriptPath) {
 		#	Write-Verbose "Set-Location:$scriptPath"
@@ -70,9 +70,9 @@ function Build-SitecoreDocker
 	}
 	process {
 		try {
-			Set-Location "$reposPath\$dockerimages"
-			
 			Set-SitecoreDockerLicense
+			
+			Set-Location "$reposPath\$dockerimages"
 			
 			if (!(Test-Path "certs")) {
 				mkdir "certs"

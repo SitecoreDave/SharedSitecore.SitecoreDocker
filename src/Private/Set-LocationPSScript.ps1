@@ -33,20 +33,18 @@ function Set-LocationPSScript
     Param
     (
         [Parameter(Position=0)] # Positional parameter
-        [string]$path = $PSScriptRoot,		
+        [string]$path = "",		
         [Parameter(Position=1)] # Positional parameter
         [string]$cwd = ""
     )
 	begin {
 		$ErrorActionPreference = 'Stop'
 		$VerbosePreference = "Continue"
+
 		$scriptName = ($MyInvocation.MyCommand.Name.Replace(".ps1",""))
-		$scriptPath = $PSScriptRoot
-		if(!$cwd){
-			#$cwd = Get-Location
-			$cwd = $MyInvocation.PSCommandPath
-			#TODO: believe this needs to be changed to folder, think its actual stop-sitecoredocker.ps1
-		}
+		$scriptPath = $PSScriptRoot #$MyInvocation.MyCommand.Path
+		if(!$path) { $path = $scriptPath | Split-Path }
+		if(!$cwd) { $cwd = $scriptPath | Split-Path }
 
 		Write-Verbose "$scriptName $path $cwd started"
 	}

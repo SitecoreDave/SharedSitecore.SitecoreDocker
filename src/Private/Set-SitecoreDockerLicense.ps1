@@ -34,7 +34,8 @@ function Set-SitecoreDockerLicense
     (
         [Parameter(Position=0)] # Positional parameter
 		[alias("licensePath")]
-        [string]$license = "\\license\\license.xml",
+		[ValidateScript( { Test-Path $_ -PathType "Leaf" })]
+        [string]$license = "\license\license.xml",
 		[Parameter(Position=1)] # Positional parameter
 		[alias("images")]
         [string]$dockerimages = "docker-images"
@@ -67,8 +68,9 @@ function Set-SitecoreDockerLicense
 	process {
 		try {
 			if (!(Test-Path $license)) {
+				Write-Verbose "license:$license not found trying other locations."
 				$license = "c:\license\license.xml"
-				#Check another location, another repo? older SharedSitecore.Sinstall?
+				#Check other locations: another repo? older SharedSitecore.Sinstall?
 				#if (!(Test-Path $license)) {
 				#	$license = Join-Path (Join-Path (Join-Path $reposPath "SharedSitecore.Sinstall") "assets") "license.xml"
 				#}
@@ -80,17 +82,20 @@ function Set-SitecoreDockerLicense
 				EXIT 1
 			}
 
-			#MUST HAVE VALID LICENSEPATH TO CONTINUE WITHOUT ERROR
+			#MUST HAVE VALID github.com/sitecore/docker-images repo TO CONTINUE WITHOUT ERROR
 			if (!(Test-Path "$reposPath\$dockerimages")) {
 				Write-Error "github.com/sitecore/docker-images is a prerequisite for $scriptName."
 				#TODO: CALL git clone github.com/sitecore/docker-images
 				EXIT 1
 			}
-			
-			Set-Location "$reposPath\$dockerimages"
+			#Had to add this check, Set-LicenseEnvironmentVariable sent \ to c
+			if ($license.StartsWith("\")) {
+				$license = "$((Get-Location).Drive.Name):$license"
+			}
 			Write-Verbose "Set-LicenseEnvironmentVariable:$license"
 			if($PSCmdlet.ShouldProcess($license)) {
-				. .\build\Set-LicenseEnvironmentVariable.ps1 -Path $license
+				Set-Location "$reposPath\$dockerimages"
+				. .\build\Set-LicenseEnvironmentVariable.ps1 -Path $license -PersistForCurrentUser
 			}
 		}
 		finally {
