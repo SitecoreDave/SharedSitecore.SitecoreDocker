@@ -1,9 +1,9 @@
 Set-StrictMode -Version Latest
 <#
 .SYNOPSIS
-    Sets current working directory and returns original directory as string so it can be restored when ready
+    Sets current working directory and returns original directory as string
 .DESCRIPTION
-    Sets current working directory
+    Sets current working directory of executing script and returns directory to set when complete (default: original directory)
 .PARAMETER Path
     Specifies the path that needs to be set as current working directory
 .PARAMETER Cwd
