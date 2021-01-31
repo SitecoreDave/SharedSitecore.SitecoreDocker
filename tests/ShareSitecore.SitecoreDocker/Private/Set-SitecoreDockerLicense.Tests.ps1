@@ -1,5 +1,5 @@
-. $PSScriptRoot\..\TestRunner.ps1 {
-    . $PSScriptRoot\..\TestUtils.ps1
+. $PSScriptRoot\tests\TestRunner.ps1 {
+    . $PSScriptRoot\tests\TestUtils.ps1
 
     Describe 'Set-SitecoreDockerLicense.Tests' {
 

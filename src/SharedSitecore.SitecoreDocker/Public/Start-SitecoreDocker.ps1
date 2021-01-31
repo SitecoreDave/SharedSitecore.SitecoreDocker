@@ -1,4 +1,7 @@
 Set-StrictMode -Version Latest
+#####################################################
+#  Start-SitecoreDocker
+#####################################################
 <#
 .SYNOPSIS
     Sets a variable in a Docker environment (.env) file.
@@ -22,11 +25,6 @@ Set-StrictMode -Version Latest
 .OUTPUTS
     None.
 #>
-#####################################################
-#
-#  Start-SitecoreDocker
-#
-#####################################################
 function Start-SitecoreDocker
 {
 	[CmdletBinding(SupportsShouldProcess)]
@@ -49,7 +47,7 @@ function Start-SitecoreDocker
 		$scriptFolder = Split-Path $scriptPath
 		
 		Write-Verbose "$scriptName $config started"
-		$cwd = Set-LocationPSScript $scriptFolder
+		Push-Location $PSScriptRoot
 		#$repoPath = [System.IO.Path]::GetFullPath("$cwd/../../..")
 		#$repoPath = System.IO.Path]::GetFullPath(($cwd + "\.." * 3))
 		#$repoPath = (Get-Item $cwd).parent.parent.parent.FullName
@@ -68,7 +66,7 @@ function Start-SitecoreDocker
 			}
         }
         finally {
-            Set-Location $cwd
+            Pop-Location
         }
     }
 }

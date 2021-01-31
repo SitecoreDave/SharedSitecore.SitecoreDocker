@@ -1,4 +1,7 @@
 Set-StrictMode -Version Latest
+#####################################################
+#  Build-SitecoreDocker
+#####################################################
 <#
 .SYNOPSIS
     Sets a variable in a Docker environment (.env) file.
@@ -22,11 +25,6 @@ Set-StrictMode -Version Latest
 .OUTPUTS
     None.
 #>
-#####################################################
-#
-#  Build-SitecoreDocker
-#
-#####################################################
 function Build-SitecoreDocker
 {
     Param
@@ -51,12 +49,12 @@ function Build-SitecoreDocker
 		$scriptFolder = Split-Path $scriptPath
 
 		Write-Verbose "$scriptName $version $os started"
-		$cwd = Set-LocationPSScript $scriptFolder
+		Push-Location $PSScriptRoot
 		#$repoPath = [System.IO.Path]::GetFullPath("$cwd/../../..")
 		#$repoPath = System.IO.Path]::GetFullPath(($cwd + "\.." * 3))
 		#$moduleName = (Get-Item $cwd).Parent.Parent.Parent.FullName
 		#$moduleName = Split-Path (Split-Path (Split-Path $scriptPath -Parent) -Parent) -Leaf
-		$reposPath = Split-Path (Split-Path (Split-Path $scriptPath -Parent) -Parent) -Parent
+		$reposPath = Split-Path (Split-Path (Split-Path (Split-Path $scriptPath -Parent) -Parent) -Parent) -Parent
 
 		#$SettingsFileName = "$scriptName.settings.json"
 		#$SettingsFile = Join-Path "$cwd" $SettingsFileName
@@ -89,7 +87,7 @@ function Build-SitecoreDocker
 			#. .\Build.ps1 -SitecoreVersion "9.3.0"
 		}
 		finally {
-			Set-Location $cwd
+			Pop-Location
 		}
 	}
 }

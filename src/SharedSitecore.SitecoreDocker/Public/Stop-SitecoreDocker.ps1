@@ -1,4 +1,7 @@
 Set-StrictMode -Version Latest
+#####################################################
+#  Stop-SitecoreDocker
+#####################################################
 <#
 .SYNOPSIS
     Sets a variable in a Docker environment (.env) file.
@@ -22,11 +25,6 @@ Set-StrictMode -Version Latest
 .OUTPUTS
     None.
 #>
-#####################################################
-#
-#  Stop-SitecoreDocker
-#
-#####################################################
 function Stop-SitecoreDocker
 {
 	[CmdletBinding(SupportsShouldProcess)]
@@ -51,7 +49,7 @@ function Stop-SitecoreDocker
 		$location = Get-Location
 		Write-Verbose "location:$location"
 		#$cwd = Set-LocationPSScript $PSScriptRoot $location
-		$cwd = Set-LocationPSScript $PSScriptRoot
+		Push-Location $PSScriptRoot
 		Write-Verbose "cwd:$cwd"
 		#$cwd = Get-Location
 		#if ($cwd -ne $scriptPath) {
@@ -72,7 +70,7 @@ function Stop-SitecoreDocker
 			}
         }
         finally {
-            Set-Location $cwd
+            Pop-Location
         }
     }
 }

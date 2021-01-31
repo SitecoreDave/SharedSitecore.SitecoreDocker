@@ -1,4 +1,7 @@
 Set-StrictMode -Version Latest
+#####################################################
+#  Set-SitecoreDockerLicense
+#####################################################
 <#
 .SYNOPSIS
     Sets a variable in a Docker environment (.env) file.
@@ -22,11 +25,6 @@ Set-StrictMode -Version Latest
 .OUTPUTS
     None.
 #>		
-#####################################################
-#
-#  Set-SitecoreDockerLicense
-#
-#####################################################
 function Set-SitecoreDockerLicense
 {
 	[CmdletBinding(SupportsShouldProcess)]
@@ -51,10 +49,12 @@ function Set-SitecoreDockerLicense
 		$scriptFolder = Split-Path $scriptPath
 
 		Write-Verbose "$scriptName $license started"
-		$cwd = Set-LocationPSScript $scriptFolder
+		Push-Location $PSScriptRoot
 		#$repoPath = [System.IO.Path]::GetFullPath("$cwd/../../..")
 		#$repoPath = System.IO.Path]::GetFullPath(($cwd + "\.." * 3))
-		$reposPath = Split-Path (Split-Path (Split-Path $scriptPath -Parent) -Parent) -Parent
+		$repoPath = Split-Path (Split-Path (Split-Path $scriptPath -Parent) -Parent) -Parent
+		Write-Verbose "repoPath:$repoPath"
+		$reposPath = Split-Path $repoPath -Parent
 		Write-Verbose "reposPath:$reposPath"
 
 		#$SettingsFileName = "$scriptName.settings.json"
@@ -64,11 +64,15 @@ function Set-SitecoreDockerLicense
 		try {
 			if (!(Test-Path $license)) {
 				Write-Verbose "license:$license not found trying other locations."
-				$license = "c:\license\license.xml"
-				#Check other locations: another repo? older SharedSitecore.Sinstall?
-				#if (!(Test-Path $license)) {
-				#	$license = Join-Path (Join-Path (Join-Path $reposPath "SharedSitecore.Sinstall") "assets") "license.xml"
-				#}
+				$license = "$repoPath/assets/license/license.xml"
+				if (!(Test-Path $license)) {
+					Write-Verbose "license:$license not found trying other locations."
+					$license = "c:\license\license.xml"
+					#Check other locations: another repo? older SharedSitecore.Sinstall?
+					#if (!(Test-Path $license)) {
+					#	$license = Join-Path (Join-Path (Join-Path $reposPath "SharedSitecore.Sinstall") "assets") "license.xml"
+					#}
+				}
 			}
 			
 			#MUST HAVE VALID LICENSEPATH TO CONTINUE WITHOUT ERROR
@@ -94,7 +98,7 @@ function Set-SitecoreDockerLicense
 			}
 		}
 		finally {
-			Set-Location $cwd
+			Pop-Location
 		}
 	}
 }
