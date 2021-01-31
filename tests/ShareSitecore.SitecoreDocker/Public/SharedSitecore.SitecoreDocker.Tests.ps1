@@ -3,26 +3,30 @@ Write-Verbose "repoPath:$repoPath"
 . $repoPath\tests\TestRunner.ps1 {
     $repoPath = Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Parent
     . $repoPath\tests\TestUtils.ps1
-
+    $ModuleName = Split-Path $repoPath -Leaf
     $ModuleScriptName = 'SharedSitecore.SitecoreDocker.psm1'
     $ModuleManifestName = 'SharedSitecore.SitecoreDocker.psd1'
-    $ModuleScriptPath = "$repoPath\src\$ModuleScriptName"
-    $ModuleManifestPath = "$repoPath\src\$ModuleManifestName"
+    $ModuleScriptPath = "$repoPath\src\$ModuleName\$ModuleScriptName"
+    $ModuleManifestPath = "$repoPath\src\$\ModuleName\$ModuleManifestName"
 
     if (!(Get-Module PSScriptAnalyzer -ErrorAction SilentlyContinue)) {
         Install-Module -Name PSScriptAnalyzer -Repository PSGallery -Force
     }
 
     Describe 'Module Tests' {
-        $ModuleScriptName = 'SharedSitecore.SitecoreDocker.psm1'
+        $repoPath = Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Parent
+        $ModuleName = Split-Path $repoPath -Leaf
+        $ModuleScriptName = "$ModuleName.psm1"
         #$ModuleManifestName = 'SharedSitecore.SitecoreDocker.psd1'
-        $ModuleScriptPath = "$repoPath\src\$ModuleScriptName"
+        $ModuleScriptPath = "$repoPath\src\$ModuleName\$ModuleScriptName"
         #$ModuleManifestPath = "$PSScriptRoot\..\..\src\$ModuleManifestName"
 
         It 'imports successfully' {
-            $ModuleScriptName = 'SharedSitecore.SitecoreDocker.psm1'
+            $repoPath = Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Parent
+            $ModuleName = Split-Path $repoPath -Leaf
+            #$ModuleScriptName = 'SharedSitecore.SitecoreDocker.psm1'
             #$ModuleManifestName = 'SharedSitecore.SitecoreDocker.psd1'
-            $ModuleScriptPath = "$repoPath\src\$ModuleScriptName"
+            $ModuleScriptPath = "$repoPath\src\$ModuleName\$ModuleName.psm1"
             #$ModuleManifestPath = "$PSScriptRoot\..\..\src\$ModuleManifestName"
 
             Write-Verbose "Import-Module -Name $($ModuleScriptPath)"
@@ -30,9 +34,10 @@ Write-Verbose "repoPath:$repoPath"
         }
 
         It 'passes default PSScriptAnalyzer rules' {
-            
-            $ModuleScriptName = 'SharedSitecore.SitecoreDocker.psm1'
-            $ModuleScriptPath = "$repoPath\src\$ModuleScriptName"
+            $repoPath = Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Parent
+            $ModuleName = Split-Path $repoPath -Leaf
+            #$ModuleScriptName = 'SharedSitecore.SitecoreDocker.psm1'
+            $ModuleScriptPath = "$repoPath\src\$ModuleName\$ModuleName.psm1"
 
             Invoke-ScriptAnalyzer -Path $ModuleScriptPath | Should -BeNullOrEmpty
         }
@@ -40,9 +45,10 @@ Write-Verbose "repoPath:$repoPath"
 
     Describe 'Module Manifest Tests' {
         It 'passes Test-ModuleManifest' {
-            
-            $ModuleManifestName = 'SharedSitecore.SitecoreDocker.psd1'
-            $ModuleManifestPath = "$repoPath\src\$ModuleManifestName"
+            $repoPath = Split-Path (Split-Path (Split-Path $PSScriptRoot -Parent) -Parent) -Parent
+            $ModuleName = Split-Path $repoPath -Leaf
+            $ModuleManifestName = "$ModuleName.psd1"
+            $ModuleManifestPath = "$repoPath\src\$ModuleName\$ModuleManifestName"
 
             Write-Output $ModuleManifestPath
             Test-ModuleManifest -Path $ModuleManifestPath | Should -Not -BeNullOrEmpty
