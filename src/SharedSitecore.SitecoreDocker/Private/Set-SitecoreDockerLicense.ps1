@@ -33,7 +33,7 @@ function Set-SitecoreDockerLicense
         [Parameter(Position=0)] # Positional parameter
 		[alias("licensePath")]
 		[ValidateScript( { Test-Path $_ -PathType "Leaf" })]
-        [string]$license = "\license\license.xml",
+        [string]$license = "",
 		[Parameter(Position=1)] # Positional parameter
 		[alias("images")]
         [string]$dockerimages = "docker-images"
@@ -52,7 +52,7 @@ function Set-SitecoreDockerLicense
 		Push-Location $PSScriptRoot
 		#$repoPath = [System.IO.Path]::GetFullPath("$cwd/../../..")
 		#$repoPath = System.IO.Path]::GetFullPath(($cwd + "\.." * 3))
-		$repoPath = Split-Path (Split-Path (Split-Path $scriptPath -Parent) -Parent) -Parent
+		$repoPath = Split-Path (Split-Path $scriptPath -Parent) -Parent
 		Write-Verbose "repoPath:$repoPath"
 		$reposPath = Split-Path $repoPath -Parent
 		Write-Verbose "reposPath:$reposPath"
@@ -62,6 +62,7 @@ function Set-SitecoreDockerLicense
 	}
 	process {
 		try {
+			$license = "\license\license.xml"
 			if (!(Test-Path $license)) {
 				Write-Verbose "license:$license not found trying other locations."
 				$license = "$repoPath/assets/license/license.xml"
@@ -93,6 +94,7 @@ function Set-SitecoreDockerLicense
 			}
 			Write-Verbose "Set-LicenseEnvironmentVariable:$license"
 			if($PSCmdlet.ShouldProcess($license)) {
+				Copy-Item $license "$repoPath\..\assets"
 				Set-Location "$reposPath\$dockerimages"
 				. .\build\Set-LicenseEnvironmentVariable.ps1 -Path $license -PersistForCurrentUser
 			}
