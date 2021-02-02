@@ -42,16 +42,22 @@ function Start-SitecoreDocker
 		#Clear-Host
 		$VerbosePreference = "Continue"
 
-		$scriptName = ($MyInvocation.MyCommand.Name.Replace(".ps1",""))
-		$scriptPath = $PSScriptRoot #$MyInvocation.MyCommand.Path
-		$scriptFolder = Split-Path $scriptPath
+		#$scriptName = ($MyInvocation.MyCommand.Name.Replace(".ps1",""))
+		#$scriptPath = $PSScriptRoot #$MyInvocation.MyCommand.Path
+		#$scriptFolder = Split-Path $scriptPath
 		
-		Write-Verbose "$scriptName $config started"
+		Write-Verbose "$PSScriptRoot $config started"
+
+		$moduleBase = Get-ModuleBase #$MyInvocation.MyCommand.Module.ModuleBase
+		Write-Verbose "moduleBase:$moduleBase"
+		$repoPath = $moduleBase
+		Write-Verbose "repoPath:$repoPath"
+
 		Push-Location $PSScriptRoot
 		#$repoPath = [System.IO.Path]::GetFullPath("$cwd/../../..")
 		#$repoPath = System.IO.Path]::GetFullPath(($cwd + "\.." * 3))
 		#$repoPath = (Get-Item $cwd).parent.parent.parent.FullName
-		$reposPath = Split-Path (Split-Path (Split-Path $scriptPath -Parent) -Parent) -Parent
+		#$reposPath = Split-Path (Split-Path (Split-Path $scriptPath -Parent) -Parent) -Parent
 		Write-Verbose "reposPath:$reposPath"
 	}
 	process {

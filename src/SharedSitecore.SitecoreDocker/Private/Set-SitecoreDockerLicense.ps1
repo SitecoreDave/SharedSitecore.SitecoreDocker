@@ -44,38 +44,48 @@ function Set-SitecoreDockerLicense
 		#Clear-Host
 		$VerbosePreference = "Continue"
 
-		$scriptName = ($MyInvocation.MyCommand.Name.Replace(".ps1",""))
-		$scriptPath = $PSScriptRoot #$MyInvocation.MyCommand.Path
-		$scriptFolder = Split-Path $scriptPath
+		#$scriptName = ($MyInvocation.MyCommand.Name.Replace(".ps1",""))
+		#$scriptPath = $PSScriptRoot #$MyInvocation.MyCommand.Path
 
-		Write-Verbose "$scriptName $license started"
-		Push-Location $PSScriptRoot
+		Write-Verbose "$PSScriptRoot $license started"
+
 		#$repoPath = [System.IO.Path]::GetFullPath("$cwd/../../..")
 		#$repoPath = System.IO.Path]::GetFullPath(($cwd + "\.." * 3))
-		$repoPath = Split-Path (Split-Path $scriptPath -Parent) -Parent
+		#$repoPath = Split-Path (Split-Path (Split-Path $scriptPath -Parent) -Parent) -Parent
+		$moduleBase = Get-ModuleBase #$MyInvocation.MyCommand.Module.ModuleBase
+		Write-Verbose "moduleBase:$moduleBase"
+		$repoPath = $moduleBase
 		Write-Verbose "repoPath:$repoPath"
 		$reposPath = Split-Path $repoPath -Parent
 		Write-Verbose "reposPath:$reposPath"
+
+		#$startPath = Split-Path $reposPath -Parent
+		#Write-Verbose "startPath:$startPath"
+		Push-Location $reposPath
 
 		#$SettingsFileName = "$scriptName.settings.json"
 		#$SettingsFile = Join-Path "$cwd" $SettingsFileName
 	}
 	process {
 		try {
-			$license = "\license\license.xml"
+			$license = Join-Path $pwd "assets/license/license.xml"
 			if (!(Test-Path $license)) {
 				Write-Verbose "license:$license not found trying other locations."
-				$license = "$repoPath/assets/license/license.xml"
+				$license = "/license/license.xml"
 				if (!(Test-Path $license)) {
 					Write-Verbose "license:$license not found trying other locations."
-					$license = "c:\license\license.xml"
-					#Check other locations: another repo? older SharedSitecore.Sinstall?
-					#if (!(Test-Path $license)) {
-					#	$license = Join-Path (Join-Path (Join-Path $reposPath "SharedSitecore.Sinstall") "assets") "license.xml"
-					#}
+					$license = "$repoPath/assets/license/license.xml"
+					if (!(Test-Path $license)) {
+						Write-Verbose "license:$license not found trying other locations."
+						$license = "c:\license\license.xml"
+						#Check other locations: another repo? older SharedSitecore.Sinstall?
+						#if (!(Test-Path $license)) {
+						#	$license = Join-Path (Join-Path (Join-Path $reposPath "SharedSitecore.Sinstall") "assets") "license.xml"
+						#}
+					}
 				}
 			}
-			
+
 			#MUST HAVE VALID LICENSEPATH TO CONTINUE WITHOUT ERROR
 			if (!(Test-Path $license)) {
 				Write-Error "license:$license not found"
@@ -94,8 +104,8 @@ function Set-SitecoreDockerLicense
 			}
 			Write-Verbose "Set-LicenseEnvironmentVariable:$license"
 			if($PSCmdlet.ShouldProcess($license)) {
-				Copy-Item $license "$repoPath\..\assets"
-				Set-Location "$reposPath\$dockerimages"
+				Copy-Item $license (Join-Path $repoPath "assets\license\license.xml")
+				Set-Location (Join-Path $reposPath $dockerimages)
 				. .\build\Set-LicenseEnvironmentVariable.ps1 -Path $license -PersistForCurrentUser
 			}
 		}
